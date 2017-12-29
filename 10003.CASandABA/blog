@@ -1,0 +1,68 @@
+上一篇文章《java想不到的运行结果2-volatile》提到了i++这种操作，在机器指令层面上不具备原子性，所以即使使用volatile,多线程情况下也是不安全的。
+当然锁可以解决这个问题，这一次提供一个更优的方案-CAS。CAS是compareAndSwap的缩写，原理是把compareAndSwap这个操作编译成一个指令。它并不只是i++操作
+还包含了一个比较操作。
+下面是一个简单的列子。
+import java.util.concurrent.atomic.AtomicInteger;
+
+class TestThread extends Thread {
+
+  public static AtomicInteger i = new AtomicInteger(0);
+
+  public void inrc() {
+    // 这里面使用了传说中的CAS 实际上是 sun.misc.Unsafe 类的compareAndSwap 操作
+    i.getAndIncrement();
+
+    // 用户不能自己调用
+    // @CallerSensitive
+    // public static Unsafe getUnsafe() {
+    //     Class var0 = Reflection.getCallerClass();
+    //     if(!VM.isSystemDomainLoader(var0.getClassLoader())) {
+    //         throw new SecurityException("Unsafe");
+    //     } else {
+    //         return theUnsafe;
+    //     }
+    // }
+  }
+
+  public void run() {
+    for (int a=0;a<1000;a++) {
+      inrc();
+    }
+  }
+
+}
+
+
+class App {
+
+  public static void main(String[] args) {
+    TestThread[] pool = {new TestThread(), new TestThread(), new TestThread()};
+    for (TestThread item : pool ) {
+      item.start();
+    }
+    boolean isDo = true;
+    while(isDo) {
+      isDo = false;
+      for (TestThread item : pool ) {
+        if(item.isAlive()) {
+          isDo = true;
+          break;
+        }
+      }
+    }
+    System.out.println("The correct value is 3000; now:"+TestThread.i.toString());
+  }
+
+}
+运行结果:
+The correct value is 3000; now:3000
+The correct value is 3000; now:3000
+The correct value is 3000; now:3000
+运行了几次都是这个结果。
+代码注释中有有一个代码源代码追踪结果，有注解@CallerSensitive的那段代码可以看出，Unsafe类用户不是不能直接使用的（当然反射除外）
+还有一个问题是CAS中的逻辑问题,CAS相当与代码
+if(a==b) {
+  a++;
+}
+那么存在一个问题如果a在被几个线程先后修改a=>c=>d=>a，最终到CAS操作时候a++操作实际上会被执行。所以对比较操作有强烈的需求，两次比较过程中也不能改变时
+需要使用锁配合其它方式实现。这个问题被叫做ABA问题。当然jdk中也提供了AtomicStampedReference类来解决它。

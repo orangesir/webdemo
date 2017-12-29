@@ -1,0 +1,10 @@
+一步一步用maven创建javaweb应用-把项目导入到ide中
+
+上一篇我们把项目发布到jetty中了。那么我们接下来应该丰富我们的项目了。下一篇我们将使用java代码，使用servlet。由于要写java代码，所以建议大家选择一个ide。当今流行的ide,intellij idea和eclipse。他们各有个的特点，eclipse这个就不用说了开源免费的，而且老牌，从我听说java这个名词时候它就一直伴随着java。intellij idea是有一个公司在专门维护，以它优越的功能打败了其它竞争对手。包括现在的android开发工具android studio都是基于它开发的。我个人更偏爱intellij idea一点。虽然它是收费的，但是也有一个开源社区版本，个人使用的应该够了。
+
+首先下载一个intellij idea，下载链接:https://www.jetbrains.com/idea/download, 应该是开箱即用的。
+
+导入项目的方法:
+   file>open 打开项目的根目录，下面是截图。
+   [图sw_openfile.png]
+在图的左上角有菜单file

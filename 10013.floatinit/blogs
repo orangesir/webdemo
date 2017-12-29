@@ -1,0 +1,20 @@
+java想不到的运行结果13-浮点数默认类型
+
+浮点数天天用到，但是有该用什么姿势正确的初始化呢？
+
+demo：
+class App {
+
+  public static void main(String[] args) {
+    float a=1.2;
+  }
+
+}
+上面这段代码的编译结果:
+App.java:5: error: incompatible types: possible lossy conversion from double to float
+    float a=1.2;
+            ^
+1 error
+
+有些时候这中细节始终被忽略。原来在java中如果直接一个小数如1.5，那么它默认数据类型是double。上面的错误是只可能会精度丢失。
+而float的正确姿势是float a=1.2f;

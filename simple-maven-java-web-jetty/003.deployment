@@ -1,0 +1,52 @@
+一步一步用maven创建javaweb应用-把最简单的应用打包，部署到jetty服务器上面
+
+上一篇文章我们创建了最简单web项目，并且使用插件jetty-maven-plugin使项目运行起来了，并且在浏览器中访问到了。但是在线上环境中我们通常使用不是jetty插件运行程序,而是把项目打包,然后发布到外部安装好的jetty或者tomcat中。这一篇文章我们就来完成这个过程。
+
+在进行下面的操作时请确保你的jetty已经独立安装了,可以参考这篇文章:http://www.orangesir.com/a/50.html
+
+项目打包:
+其实在初始化的项目的pom.xml文件中我们可以找到<packaging>war</packaging>这句代码的意思是最终可以包项目打包为一个war包。
+在项目根目录下面运行下面的命令:
+mvn package
+截取运行结果中的一部分:
+[INFO] Packaging webapp
+[INFO] Assembling webapp [simpleweb] in [/home/zhangwei/projects/unthinkablejava/simple-maven-java-web-jetty/simpleweb/target/simpleweb]
+[INFO] Processing war project
+[INFO] Copying webapp resources [/home/zhangwei/projects/unthinkablejava/simple-maven-java-web-jetty/simpleweb/src/main/webapp]
+[INFO] Webapp assembled in [24 msecs]
+[INFO] Building war: /home/zhangwei/projects/unthinkablejava/simple-maven-java-web-jetty/simpleweb/target/simpleweb.war
+[INFO] WEB-INF/web.xml already added, skipping
+可以看到在target文件夹下面有一个simpleweb.war文件，这个就是整个项目经过编译后打包的war包。
+
+war包发布:
+找到文件夹:jetty根目录/webapps/，如果你是按照我上面给的链接的文章安装的，那么这个目录下面你已经创建了一个ROOT文件夹。
+把simpleweb.war复制到这个目录下面。进入webapps目录下面运行下面的命令:
+ls
+可以看到下面的结果:
+README.TXT  ROOT  simpleweb.war
+接下来你需要改动一个jetty配置，在jetty根根目录下面有一个start.ini的文件，当你使用start.jar方式启动jetty时你可以在这里改动配置，把这个配置前面的#去掉。
+jetty.deploy.extractWars=true
+现在jetty根目录下面运行下面命令，启动jetty:
+java -jar start.jar
+运行结果:
+2017-12-28 15:31:21.802:INFO::main: Logging initialized @441ms to org.eclipse.jetty.util.log.StdErrLog
+2017-12-28 15:31:21.977:WARN:oejs.HomeBaseWarning:main: This instance of Jetty is not running from a separate {jetty.base} directory, this is not recommended.  See documentation at http://www.eclipse.org/jetty/documentation/current/startup.html
+2017-12-28 15:31:22.014:INFO:oejs.Server:main: jetty-9.4.8.v20171121, build timestamp: 2017-11-22T05:27:37+08:00, git hash: 82b8fb23f757335bb3329d540ce37a2a2615f0a8
+2017-12-28 15:31:22.032:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:///home/zhangwei/soft/jetty-distribution-9.4.8.v20171121/webapps/] at interval 1
+2017-12-28 15:31:22.216:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=36ms
+2017-12-28 15:31:22.375:INFO:oejs.session:main: DefaultSessionIdManager workerName=node0
+2017-12-28 15:31:22.375:INFO:oejs.session:main: No SessionScavenger set, using defaults
+2017-12-28 15:31:22.376:INFO:oejs.session:main: Scavenging every 660000ms
+2017-12-28 15:31:22.413:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@dc24521{/simpleweb,file:///tmp/jetty-0.0.0.0-8080-simpleweb.war-_simpleweb-any-2346050969338838737.dir/webapp/,AVAILABLE}{/simpleweb.war}
+2017-12-28 15:31:22.461:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=31ms
+2017-12-28 15:31:22.506:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@1ddf84b8{/,file:///home/zhangwei/soft/jetty-distribution-9.4.8.v20171121/webapps/ROOT/,AVAILABLE}{/ROOT}
+2017-12-28 15:31:22.530:INFO:oejs.AbstractConnector:main: Started ServerConnector@294425a7{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+2017-12-28 15:31:22.530:INFO:oejs.Server:main: Started @1170ms
+代表jetty启动成功了。
+
+在浏览器中访问项目:
+http://127.0.0.1:8080/simpleweb/
+下面是访问截图:
+[图sw_hello_jetty.png]
+
+到这里，最简单的项目打包发布过程就是这样了。剩下的就是熟悉jetty配置。可以给自己一些问题，在去文档中找答案，比如如何改变发布目录，改变端口……

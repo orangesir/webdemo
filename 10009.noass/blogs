@@ -1,0 +1,59 @@
+java想不到的运行结果8-未赋值变量的两种不同情况
+
+java在处理未赋值变量时候，有两种不同的情况，一种是局部常量，一种是类的成员变量，这两种情况是不用的。
+
+以前一直以为如果只申明变量，不赋值就调用会报错的。但是实际情况却不是这样。
+局部变量:
+
+class App {
+
+  public static void main(String[] args) {
+    int a;
+    System.out.println(a);
+  }
+
+}
+
+javac编译结果:
+App.java:6: error: variable a might not have been initialized
+    System.out.println(a);
+                       ^
+1 error
+
+
+类的成成员变量:
+代码:
+class Data {
+  private int a;
+
+  public void setA(int a) {
+    this.a = a;
+  }
+
+  public int getA() {
+    return a;
+  }
+}
+
+class AppDefault {
+
+  public static void main(String[] args) {
+    Data data = new Data();
+    System.out.println(data.getA());
+  }
+
+}
+运行结果:
+0
+
+通过上面的例子，可以看出局部变量，在编译阶段就会报错。而成员变量在编译时候是判断不出错误的，所以在运行时给它一个默认值。
+其它基本类型应该也有默认类型:
+int:0
+short:0
+long:0
+boolean:false
+float:0.0
+double:0.0
+char:
+byte:0
+char ascii:0  // char的ascii码

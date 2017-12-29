@@ -1,0 +1,21 @@
+java想不到的运行结果5-null可以被强制转换为任何对象
+
+null可以被强制转换为任何对象，而且还可以调动静态属性。
+代码:
+class Null {
+  public static int value = 100;
+}
+
+class App {
+
+  public static void main(String[] args) {
+    System.out.println(((Null)null).value);
+  }
+
+}
+刚开始我以为这段代码编译不通过的。没想到居然可以正常调用的。
+运行结果:
+100
+
+一个妹子的博客:
+http://www.cnblogs.com/lanxuezaipiao/p/3371224.html 19题

@@ -1,0 +1,62 @@
+每日开源-guava
+
+guava是一个java公共库，包含了集合、缓存、原语支持、并发库、公共注解、字符串处理、I/O等等。主要目的是解决常用代码复用,减少错误,减少代码量。同时包含android版本和jre版本。
+
+github地址:https://github.com/google/guava
+维护者是google,大品牌值得信赖。
+
+demo:
+int a = 2147483647;
+int b = 5;
+计算它们相加的值。
+
+普通情况:
+package com.orangesir;
+
+public class App
+{
+    public static void main( String[] args )
+    {
+        int a = 2147483647;
+        int b = 5;
+        int c = a+b;
+
+//        int d = IntMath.checkedAdd(a,b);
+        System.out.println( "c:"+String.valueOf(c));
+    }
+}
+执行结果:
+c:-2147483644
+如果有经验的程序员应该知道线上程序出现这种情况通常会出现一些莫名奇妙的结果。很难发现问题出在哪里。
+
+demo:
+pom.xml
+<dependency>
+  <groupId>com.google.guava</groupId>
+  <artifactId>guava</artifactId>
+  <version>23.6-jre</version>
+  <!-- or, for Android: -->
+  <!--<version>23.6-android</version>-->
+</dependency>
+App:
+package com.orangesir;
+
+import com.google.common.math.IntMath;
+
+public class App
+{
+    public static void main( String[] args )
+    {
+        int a = 2147483647;
+        int b = 5;
+
+        int c = IntMath.checkedAdd(a,b);
+        System.out.println( "c:"+String.valueOf(c));
+    }
+}
+执行结果:
+Exception in thread "main" java.lang.ArithmeticException: overflow
+	at com.google.common.math.MathPreconditions.checkNoOverflow(MathPreconditions.java:93)
+	at com.google.common.math.IntMath.checkedAdd(IntMath.java:456)
+	at com.orangesir.App.main(App.java:12)
+抛出异常了，如果线上除了这种问题，我们很容易就通过日志定位到问题在与int超过了它能承受的最大值。

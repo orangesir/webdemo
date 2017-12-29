@@ -1,0 +1,123 @@
+微信公众号回复多条消息
+
+几天前，看微擎一个哥们开发的插件，用户在公众号中发一条消息可以回复多条消息给用户。当时觉得好酷。
+下载它的插件来看源码，这哥们加密了。
+算了还是靠自己吧!
+第一反应是可能多条消息链接在一起，做了一个demo，事实告诉我，哪有那么简单。
+翻了一下文档，可以主动向客户发送消息的途径就那么几个，除了客服消息，看上去都不能满足这个需求。
+所以尝试着在回复消息后，向用户发送几条客服消息。呵呵....很机智(虽然没有写插件那哥们机智)
+下面是demo:
+<?php
+//定义 token
+define("TOKEN", "test");
+define("APPID", "wx0a1e5dab1373f343");
+define("APPSECRET", "d4624c36b6795d1d99dcf0547af5443d");
+//实例化对象
+$wechatObj = new wechatCallbackapiTest();
+//调用函数
+if (isset($_GET['echostr'])) {
+    $wechatObj->valid();
+}else{
+    $wechatObj->responseMsg();
+}
+
+function getToken() {
+    $appid = APPID;
+    $appsecret = APPSECRET;
+    $content = file_get_contents("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$appsecret);
+    $result = json_decode($content, true);
+    return $result["access_token"];
+}
+
+function sendNotice($message, $token, $from) {
+    $post_data = array(
+        'touser'=>$from."",
+        'msgtype'=>'text',
+        'text'=>array('content'=>urlencode($message))
+    );
+    $curl = curl_init();
+    $url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=$token";
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_POSTFIELDS,urldecode(json_encode($post_data)));
+    $output = curl_exec($curl);
+    curl_close($curl);
+    return json_encode($post_data)."....".$from;
+}
+
+class wechatCallbackapiTest
+{
+    public function valid()
+    {
+        $echoStr = $_GET["echostr"];
+        if($this->checkSignature()){
+            echo $echoStr;
+            exit;
+        }
+    }
+
+    public function responseMsg()
+    {
+
+        $postStr = file_get_contents('php://input');
+        if (!empty($postStr)){
+            libxml_disable_entity_loader(true);//防止文件泄漏
+            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $fromUsername = $postObj->FromUserName;
+            $toUsername = $postObj->ToUserName;
+            $msgType = $postObj->MsgType;
+            $keyword = trim($postObj->Content);
+            $time = time();
+
+            if( $msgType == 'text' ) {
+                $itemTpl = "<xml>
+                    <ToUserName><![CDATA[%s]]></ToUserName>
+                    <FromUserName><![CDATA[%s]]></FromUserName>
+                    <CreateTime>%s</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA[%s]]></Content>
+                    </xml>";
+
+
+                $token = getToken();
+                //发送客服消息
+                $out = sendNotice("发送客服消息1", $token, $fromUsername);
+                //发送回复消息
+                $result = sprintf($itemTpl, $fromUsername, $toUsername, $time, "Hello www.orangesir.com!===>".$out);
+                echo $result;
+            }else{
+                echo "Input something...";
+            }
+
+        }else {
+            echo "";
+            exit;
+        }
+    }
+
+    private function checkSignature()
+    {
+        if (!defined("TOKEN")) {
+            throw new Exception('TOKEN is not defined!');
+        }
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+        $token = TOKEN;
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+
+        if( $tmpStr == $signature ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+
+注意切换微信appid,appsecret,如果不知道怎么申请微信测试账号＝＝＝＝>如何申请微信测试账号
+下面是演示截图

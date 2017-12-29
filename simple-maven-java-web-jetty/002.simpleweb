@@ -1,0 +1,60 @@
+一步一步用maven创建javaweb应用-mvn创建最简单的web
+
+开始之前确定maven的版本(如果没有安装mvn请去官网查看如何安装http://maven.apache.org/install.html):
+mvn -v
+Apache Maven 3.5.0 (ff8f5e7444045639af65f6095c62210b5713f426; 2017-04-04T03:39:06+08:00)
+Maven home: /home/zhangwei/soft/apache-maven-3.5.0
+Java version: 1.8.0_121, vendor: Oracle Corporation
+Java home: /home/zhangwei/soft/jdk1.8.0_121/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "4.8.0-51-generic", arch: "amd64", family: "unix"
+确保mvn使用了国内镜像作为源，否者可能特别慢。mvn切换源http://www.orangesir.com/a/2.html
+
+创建项目:
+mvn archetype:generate -DgroupId=com.orangesir -DartifactId=simpleweb -DarchetypeArtifactId=maven-archetype-webapp
+如果是第一次可能比较慢。
+创建完成后可以在当前页面下看到simpleweb文件夹:
+
+想让这个项目运行起来，使用mvn插件是最简单的方法。插件的文档：http://www.eclipse.org/jetty/documentation/9.3.x/jetty-maven-plugin.html
+修改pom.xml为：
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.orangesir</groupId>
+  <artifactId>simpleweb</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>simpleweb Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>simpleweb</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.4.8.v20171121</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+实际上只是加入了插件jetty-maven-plugin，注意版本号。
+运行:在simpleweb目录下执行命令
+mvn jetty:run
+运行结果最后几行:
+[INFO] Started ServerConnector@43da41e{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+[INFO] Started @2798ms
+[INFO] Started Jetty Server
+
+这样jetty服务器就启动了，在浏览器下面访问:
+[图sw_hello.png]
+
+运行分析:
+浏览器中访问路径是http://127.0.0.1:8080/，实际上省略了index.jsp，上面截图是我改动index.jsp，加上了11以验证访问的文件。

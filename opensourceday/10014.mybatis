@@ -1,0 +1,18 @@
+每日开源-mybatis
+
+mybatis的前生是ibatis,是一种java语言的ORM,也就是java对象与数据库关系,说白了也就是一个java代码操作sql数据库数据的框架。
+
+github地址:https://github.com/mybatis/mybatis-3
+文档地址:http://www.mybatis.org/mybatis-3/
+
+十分难得的是有中文文档，对于英文不是特别好的同学的福音了。
+中文文档地址:http://www.mybatis.org/mybatis-3/zh/index.html
+
+demo:
+本地安装mysql数据库:
+user:root
+password:123456
+
+初始化数据库:
+create database blog;
+create table user( id int , username varchar(255) default "");

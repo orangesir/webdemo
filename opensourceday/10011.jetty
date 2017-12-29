@@ -1,0 +1,21 @@
+每日开源-jetty
+
+Jetty is an open-source project providing an HTTP server, HTTP client, and javax.servlet container.
+jetty是一个开源的http服务器,htttp客户端,javax.servlet容器。
+
+github地址:https://github.com/eclipse/jetty.project
+主页:http://www.eclipse.org/jetty/documentation/
+
+jetty最简单使用(hello world!):
+1:下载jetty的zip包。下载地址:http://www.eclipse.org/jetty/download.html
+2:解压jetty包
+  unzip jetty-distribution-9.4.8.v20171121.zip
+3:编辑index.html
+  Hello World!
+  把index.html文件放到jetty-distribution-9.4.8.v20171121/webapps/ROOT/index.html
+  ROOT目录没有自己创建。
+  操作命令截图:
+  
+4:启动jetty
+  java -jar start.jar
+浏览器访问结果:

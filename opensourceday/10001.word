@@ -1,0 +1,34 @@
+每日开源-word分词软件
+
+word分词是一个Java实现的分布式的中文分词组件，提供了多种基于词典的分词算法。
+
+github地址:https://github.com/ysc/word
+这个分词工具的特点是对Lucene、Solr、ElasticSearch、Luke可以无缝的集成。同时分词算法有10种。
+作者很活跃，也乐于解答你的问题。我在issue里面提了一个疑问，过了两天去看，确实解答了我的问题。
+从代码提交上来看大部分都是作者一个人在维护整个项目,作者杨尚川在百度上很容易搜索到他的信息，资深老鸟了。
+下面我做了一个简单的demo:
+package com.orangesir;
+
+import org.apdplat.word.WordSegmenter;
+import org.apdplat.word.segmentation.Word;
+
+import java.util.List;
+
+public class App
+{
+    public static void main( String[] args )
+    {
+        List<Word> words = WordSegmenter.seg("杨尚川是APDPlat应用级产品开发平台的作者");
+        System.out.println(words);
+    }
+}
+
+pom.xml依赖:
+<dependency>
+    <groupId>org.apdplat</groupId>
+    <artifactId>word</artifactId>
+    <version>1.3</version>
+</dependency>
+
+运行结果:
+[杨尚川, APDPlat, 应用级, 产品, 开发, 平台, 作者]

@@ -1,0 +1,70 @@
+java想不到的运行结果11-泛型与方法重载
+
+大家都熟悉的是方法名和形参组成方法签名，所以一个类中方法名相同的情况，参数不同也就被认为是不同方法。
+比如下面的情况:
+参数相同的情况:
+class App {
+
+  public String p(int b) {
+      System.out.println("List<String> users");
+      return "";
+  }
+
+  public int p(int a) {
+      System.out.println("List<int> users");
+      return 0;
+  }
+
+  public static void main(String[] args) {
+    System.out.println("Hello World!");
+  }
+}
+编译结果:
+App.java:11: error: method p(int) is already defined in class App
+  public int p(int a) {
+             ^
+1 error
+参数不同的情况:
+class App {
+
+  public String p(String b) {
+      System.out.println("List<String> users");
+      return "";
+  }
+
+  public int p(int a) {
+      System.out.println("List<int> users");
+      return 0;
+  }
+
+  public static void main(String[] args) {
+    System.out.println("Hello World!");
+  }
+}
+编译通过。
+
+
+而下面的结果却让我有的意外:
+class App {
+
+  public void p(List<String> users) {
+      System.out.println("List<String> users");
+  }
+
+  public void p(List<Integer> users) {
+      System.out.println("List<int> users");
+  }
+
+  public static void main(String[] args) {
+    System.out.println("Hello World!");
+  }
+
+}
+编译结果:
+App.java:61: error: name clash: p(List<Integer>) and p(List<String>) have the same erasure
+  public void p(List<Integer> users) {
+              ^
+1 error
+虽然参数不同但是最终编译也通不过。
+《深入理解java虚拟机》中有明确描述，这是由于编译时，泛型消除的作用，所以参数List<String> users和List<Integer>
+认为是相同的参数所以两个方法是相同的方法。

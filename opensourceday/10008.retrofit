@@ -1,0 +1,93 @@
+每日开源-retrofit
+
+现在最流行的java Http 客户端。项目超级解耦，使用了超多的设计模式，除了可以用于项目中的http客户端请求外，还可以用于研究设计模式。
+
+github地址:https://github.com/square/retrofit
+首页地址:http://square.github.io/retrofit/
+
+demo代码:
+package com.orangesir;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+
+import java.io.IOException;
+import java.util.List;
+
+
+public class App
+{
+    public static final String API_URL = "https://api.github.com";
+
+    public static class Contributor {
+        public final String login;
+        public final int contributions;
+
+        public Contributor(String login, int contributions) {
+            this.login = login;
+            this.contributions = contributions;
+        }
+    }
+
+    public interface GitHub {
+        @GET("/repos/{owner}/{repo}/contributors")
+        Call<List<Contributor>> contributors(
+                @Path("owner") String owner,
+                @Path("repo") String repo);
+    }
+
+    public static void main(String... args) throws IOException {
+        // Create a very simple REST adapter which points the GitHub API.
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Create an instance of our GitHub API interface.
+        GitHub github = retrofit.create(GitHub.class);
+
+        // Create a call instance for looking up Retrofit contributors.
+        Call<List<Contributor>> call = github.contributors("square", "retrofit");
+
+        // Fetch and print a list of the contributors to the library.
+        List<Contributor> contributors = call.execute().body();
+        for (Contributor contributor : contributors) {
+            System.out.println(contributor.login + " (" + contributor.contributions + ")");
+        }
+    }
+}
+
+运行结果:
+JakeWharton (867)
+swankjesse (209)
+pforhan (48)
+eburke (36)
+dnkoutso (26)
+edenman (24)
+loganj (17)
+NightlyNexus (14)
+rcdickerson (14)
+rjrjr (13)
+kryali (9)
+adriancole (8)
+holmes (7)
+swanson (7)
+JayNewstrom (6)
+crazybob (6)
+Jawnnypoo (6)
+danrice-square (5)
+Turbo87 (5)
+ransombriggs (4)
+vanniktech (4)
+naturalwarren (4)
+guptasourabh04 (4)
+artem-zinnatullin (3)
+codebutler (3)
+icastell (3)
+jjNford (3)
+f2prateek (3)
+koalahamlet (3)
+alexgyori (2)

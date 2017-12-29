@@ -1,0 +1,46 @@
+java想不到的运行结果12-Integer和Long比较和自动装配
+
+两个Integer对象相加，实际上是obj1.intValue()+obj2.intValue(),这个里面隐含的操作叫做自动拆箱。与之相反的操作Integer a=5,实际上是Integer a=Integer.valeOf(5),这叫自动装箱。
+
+下面是一段有趣的代码:
+
+class App {
+
+  public static void main(String[] args) {
+    Integer a = 1;
+    Integer b = 2;
+    Integer c = 3;
+    Integer d = 3;
+    Integer e = 321;
+    Integer f = 321;
+    Long g = 3L;
+    System.out.println(c==d);
+    System.out.println(e==f);
+    System.out.println(c==(a+b));
+    System.out.println(c.equals(a+b));
+    System.out.println(g==(a+b));
+    System.out.println(g.equals(a+b));
+  }
+
+}
+执行结果是:
+true
+false
+true
+true
+true
+false
+
+前面4个的结果其实都在前面一篇文章中已经解释了:
+
+下面我们来解释这写结果是怎么来的：
+g==(a+b) true 这里完成了自动拆箱了
+g.equals(a+b) false 这个的原因出乎预料之外
+查看了Long类的源代码:
+public boolean equals(Object obj) {
+    if (obj instanceof Long) {
+        return value == ((Long)obj).longValue();
+    }
+    return false;
+}
+所以对应有基础变量类型的类的比较尤其注意，有些时候很出乎预料之外的。

@@ -1,0 +1,55 @@
+一步一步用maven创建javaweb应用-项目中使用servlet
+
+项目中有业务逻辑，这个需要java代码来实现。这个需要使用servlet。百度百科对servlet有详细的定义:Servlet（Server Applet）是Java Servlet的简称，称为小服务程序或服务连接器，用Java编写的服务器端程序，主要功能在于交互式地浏览和修改数据，生成动态Web内容。
+
+1:pom.xml添加依赖:
+<dependency>
+  <groupId>javax.servlet</groupId>
+  <artifactId>servlet-api</artifactId>
+  <version>2.5</version>
+  <scope>provided</scope>
+</dependency>
+2:创建java文件夹，在main文件夹上面右键new->new->Directory,创建文件夹后截图:
+[图sw_create_java.png]
+3:把java文件夹指定微源代码文件夹，在java文件夹上右键Mark Directory as->Source Root
+[图sw_java_as_sourceroot.png]
+注意上图java文件夹的颜色已经变为蓝色了。
+4:java文件夹右键new->Package,创建包com.orangesir.webcontroller,再右键webcontroller包new->class创建类Hello.java
+package com.orangesir.webcontroller;
+
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class Hello extends HttpServlet{
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.getWriter().println("Hello Servlet!");
+    }
+}
+5:修改web.xml,在根目录下面找到src/main/webapp/WEB-INI/web.xml
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <servlet-name>hello</servlet-name>
+    <servlet-class>com.orangesir.webcontroller.Hello</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>hello</servlet-name>
+    <url-pattern>/hello</url-pattern>
+  </servlet-mapping>
+</web-app>
+实际上是添加了servlet,servlet-mapping,这里是指定访问路径和访问类的对应关系。
+6:命令行下运行:
+mvn jetty:run
+7:浏览器中访问:http://127.0.0.1:8080/hello
+运行结果截图:
+[图sw_servlet_hello.png]
+
+到这里servlet就可以使用了，入了门剩下的就是api使用了。

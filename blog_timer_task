@@ -1,0 +1,46 @@
+java多线程，定时执行任务实现
+
+java标准库中有一个定时开启一个线程处理一段代码的实现--Timer,TimerTask
+
+demo:
+package orangesir.com.timerthread;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+class PrintTask extends TimerTask {
+
+    public void run() {
+        System.out.println("print info! time s:"+String.valueOf(System.currentTimeMillis()/1000));
+        new Timer().schedule(new PrintTask(), 1000);
+        System.out.println("Print task finsh and start new print task! s:"+String.valueOf(System.currentTimeMillis()/1000));
+    }
+}
+
+public class App {
+
+    public static void main(String[] args) {
+        new Thread(new PrintTask()).start(); //马山调用
+//        new Timer().schedule(new PrintTask(), 1000); 1秒后调用
+        System.out.println("main thread die!"+String.valueOf(System.currentTimeMillis()/1000));
+    }
+
+}
+执行结果:
+main thread die!1514277622
+print info! time s:1514277622
+Print task finsh and start new print task! s:1514277622
+print info! time s:1514277623
+Print task finsh and start new print task! s:1514277623
+print info! time s:1514277624
+Print task finsh and start new print task! s:1514277624
+print info! time s:1514277625
+Print task finsh and start new print task! s:1514277625
+print info! time s:1514277626
+Print task finsh and start new print task! s:1514277626
+
+当使用Timer调用时，每秒执行一次打印。
+当使用Thread调用时，马上执行。
+查看TimerTask源代码，可以看到TimerTask也是实现Runnable接口。而Timer中创建了一个线程
+private final TimerThread thread = new TimerThread(queue);
+所以Timer,TimerTask只是对线程一种封装而已。

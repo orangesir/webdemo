@@ -1,0 +1,51 @@
+每日开源-okhttp
+
+okhttp是一个http客户端java库。
+
+okhttp特点:
+1:HTTP/2支持允许对同一主机的所有请求共享一个套接字。
+2:连接池减少请求延迟(如果没有HTTP/2)。
+3:支持透明的GZIP。
+4:响应缓存可以完全避免网络重复请求。
+5:多个IP地址，那么如果第一个连接失败，OkHttp将尝试替换地址。
+6:OkHttp启动与现代TLS特性(SNI,ALPN)的新连接，如果握手失败，则返回TLS 1.0。
+7:它支持同步阻塞调用和带回调的异步调用。
+
+环境要求:android2.3+,jdk7+
+demo:
+pom.xml
+<dependency>
+  <groupId>com.squareup.okhttp3</groupId>
+  <artifactId>okhttp</artifactId>
+  <version>3.9.1</version>
+</dependency>
+
+App.java:
+package com.orangesir;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import java.io.IOException;
+
+public class App
+{
+    OkHttpClient client = new OkHttpClient();
+
+    String run(String url) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+    public static void main(String[] args) throws IOException {
+        String response = new App().run("http://www.orangesir.com");
+        System.out.println(response);
+    }
+
+}
+运行结果打印，http://www.orangesir.com的html代码（太长了就不展示了)。

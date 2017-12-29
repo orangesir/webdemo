@@ -1,0 +1,16 @@
+一步一步用maven创建javaweb应用-在idea中运行项目
+
+可能会有同学疑问，难道我们每次都要去命令行运行代码么？当然不会。
+intellij idea需要配置一下:
+进入编辑
+[图sw_in_config.png]
+创建配置
+[图sw_new_config.png]
+填写新配置
+[图sw_new_config_set.png]
+
+点击绿色运行按钮:
+[图sw_idea_runing.png]
+
+运行成功,页面打印:
+Hello Servlet!1

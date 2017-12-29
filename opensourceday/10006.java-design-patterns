@@ -1,0 +1,22 @@
+每日开源-java-design-patterns
+
+自从设计模式被提出来以后，设计模式就被大家追捧。但是不可否认设计模式是很难学的，只有在特定的场景下才可以看出某种模式的优势，而在java-design-patterns中，有许多模式的实现，在代码中更能很好的学习。
+
+github地址:https://github.com/iluwatar/java-design-patterns
+发起人是:iluwatar
+从github上看是在芬兰的一个哥们。
+
+项目简介:
+Design patterns are formalized best practices that the programmer can use to solve common problems when designing an application or system.
+
+Design patterns can speed up the development process by providing tested, proven development paradigms.
+
+Reusing design patterns helps to prevent subtle issues that can cause major problems, and it also improves code readability for coders and architects who are familiar with the patterns.
+
+设计模式是一种形式化的最佳实践，程序员可以在设计应用程序或系统时解决常见问题。
+
+设计模式可以通过提供经过验证的开发范例来加速开发过程。
+
+重用设计模式有助于避免一些可能导致重大问题的细微问题，同时也提高了熟悉这些模式的程序员和架构师的代码可读性。
+
+这个简介充分描述了设计模式的作用，我想每一个程序员都需要去学习设计模式。

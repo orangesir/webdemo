@@ -1,0 +1,128 @@
+java想不到的运行结果6-jdk Prohibited package name
+
+这几天一直在想怎么才能破坏java的双亲类加载，存萃为了好玩。
+先简单的重写了java.lang.Integer。
+package java.lang;
+
+class Integer {
+  public static String name = "user Integer!";
+}
+然后是调用了:
+import java.lang.Integer;
+
+class App {
+
+  public static void main(String[] args) {
+    System.out.println(Integer.name);
+    System.out.println("break jdk class!");
+  }
+
+}
+不出所料结果如下:
+Exception in thread "main" java.lang.NoSuchFieldError: name
+	at App.main(App.java:6)
+没有name属性很明显调用的类是是jdk的java.lang.Integer了。
+编译class文件截图:
+从图片上看，自己写的Integer类是被编译了的。但是类是没有加载到。完全符合双亲加载。
+接下来我尝试在java层面去破坏双亲加载模式,自定义一个类加载器:
+import java.io.File;
+import java.io.FileInputStream;
+
+class BreakLoader extends ClassLoader {
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        Class<?> c = findLoadedClass(name);
+        if (c == null) {
+            c = findClass(name);
+        }
+        if (resolve) {
+            resolveClass(c);
+        }
+        return c;
+    }
+
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+       String path = name.replace(".", File.separator);
+       String classfile = path+".class";
+       File classfile1 = new File(classfile);
+       System.out.println(classfile1.exists());
+       try {
+           FileInputStream fis = new FileInputStream(classfile);
+           int len = fis.available();
+           byte[] classBytes = new byte[len];
+           fis.read(classBytes);
+           fis.close();
+           return defineClass(name, classBytes, 0, len);
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+       return null;
+    }
+}
+写一个类来使用它:
+
+class AppUser {
+
+  public static void main(String[] args) {
+    BreakLoader breakLoader = new BreakLoader();
+    try {
+        Class clazz = breakLoader.loadClass("java.lang.Integer");
+        // Object obj = clazz.newInstance();
+        // Method loadTest = clazz.getDeclaredMethod("SayHello",null);
+        // loadTest.invoke(obj);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+  }
+
+}
+下面的结果精彩了:
+true
+java.lang.SecurityException: Prohibited package name: java.lang
+	at java.lang.ClassLoader.preDefineClass(ClassLoader.java:662)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:761)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:642)
+	at BreakLoader.findClass(BreakLoader.java:30)
+	at BreakLoader.loadClass(BreakLoader.java:10)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at AppUser.main(AppUser.java:7)
+居然和我预料的不一样。看来大牛已经预料到了，总有我这种无聊的人会干这种事情。
+追代码，结果看我看到了下面这段代码:
+protected final Class<?> defineClass(String name, byte[] b, int off, int len,
+                                         ProtectionDomain protectionDomain)
+        throws ClassFormatError
+    {
+        protectionDomain = preDefineClass(name, protectionDomain);
+        String source = defineClassSourceLocation(protectionDomain);
+        Class<?> c = defineClass1(name, b, off, len, protectionDomain, source);
+        postDefineClass(c, protectionDomain);
+        return c;
+    }
+这个方法不可以重写了，再接着看:
+private ProtectionDomain preDefineClass(String name,
+                                            ProtectionDomain pd)
+    {
+        if (!checkName(name))
+            throw new NoClassDefFoundError("IllegalName: " + name);
+
+        // Note:  Checking logic in java.lang.invoke.MemberName.checkForTypeAlias
+        // relies on the fact that spoofing is impossible if a class has a name
+        // of the form "java.*"
+        if ((name != null) && name.startsWith("java.")) {
+            throw new SecurityException
+                ("Prohibited package name: " +
+                 name.substring(0, name.lastIndexOf('.')));
+        }
+        if (pd == null) {
+            pd = defaultDomain;
+        }
+
+        if (name != null) checkCerts(name, pd.getCodeSource());
+
+        return pd;
+    }
+java.*这个开头的所有类被禁用了。十万只乌鸦飞过，时间有限，下次再纠结吧。
+
+如果有网友知道，欢迎邮件给我，赞美喜欢分享的人。www.orangesir.com,邮箱zhangwei0933@126.com

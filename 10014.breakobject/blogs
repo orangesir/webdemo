@@ -1,0 +1,59 @@
+java想不到的运行结果14-不完整的对象
+
+在构造方法中初始化线程,启动线程，而且这个线程对象使用了当前正在构造的对象。这是一个很绕的问题。
+
+下面是代码:
+class UseThead extends Thread{
+
+    private BreakClass breakClass;
+
+    public BreakClass getBreakClass() {
+        return breakClass;
+    }
+
+    public void setBreakClass(BreakClass breakClass) {
+        this.breakClass = breakClass;
+    }
+
+    public void run() {
+        breakClass.printHello();
+    }
+
+}
+
+
+class BreakClass {
+
+    private String hello = "Hello World!";
+
+    public BreakClass() {
+        UseThead useThead = new UseThead();
+        useThead.setBreakClass(this);
+        useThead.start();
+//        try {
+//            Thread.sleep(0, 1);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        hello = "New Hello World!";
+    }
+
+    public void printHello() {
+        System.out.println(hello);
+    }
+}
+
+public class App {
+
+    public static void main(String[] args) {
+        new BreakClass();
+    }
+
+}
+
+预计上面的代码会打印什么呢？刚开始以为是Hello World！,毕竟hello是线程启动后才赋值的。但是:
+New Hello World!
+无情的打击啊！启动线程比我想象的慢。把注释的代码取消掉，再编译执行:
+Hello World!
+
+这个故事告诉我们，千万不要在要注意对象实例化中启动会用到当前构造对象的线程，因为你不能保证，子线程中使用这个对象时候，这个对象是否构造完成。一个未完整执行构造方法的对象，鬼知道被调用了会产生什么后果。

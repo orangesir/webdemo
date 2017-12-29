@@ -16,3 +16,7 @@ password:123456
 初始化数据库:
 create database blog;
 create table user( id int , username varchar(255) default "");
+
+测试代码已经托管的github:https://github.com/orangesir/webdemo/tree/master/opensourceday/10014.mybatisOp
+
+运行结果截图:

@@ -1,0 +1,77 @@
+每日开源-spring-boot
+
+Spring boot 使得创建spring驱动的生产级应用或者服务更加简答，说白了spring boot就是为了更快，更容易的创建java应用而创建的。Spring boot使用插件化来让用户更快的使用spring boot简化他们自己用应用。
+
+spring boot在实际生产用已经很常用了，很多java服务端应用都已经采用了spring boot。
+
+github地址:https://github.com/spring-projects/spring-boot
+文档地址:https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/
+
+demo:
+pom.xml:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.9.RELEASE</version>
+  </parent>
+  <groupId>com.orangesir</groupId>
+  <artifactId>10014.springbootOp</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>10014.springbootOp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+App.java:
+package com.orangesir;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@SpringBootApplication
+public class App
+{
+    @RequestMapping("/")
+    String home() {
+        return "Hello Spring boot!";
+    }
+
+    public static void main( String[] args )
+    {
+        SpringApplication.run(App.class,args);
+    }
+}
+
+
+运行结果最后两行:
+2018-01-02 10:27:24.976  INFO 11356 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8080 (http)
+2018-01-02 10:27:24.982  INFO 11356 --- [           main] com.orangesir.App                        : Started App in 3.106 seconds (JVM running for 3.793)
+
+端口8080,通过浏览器访问:
+【图hello_springboot.png】

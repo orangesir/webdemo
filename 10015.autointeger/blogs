@@ -1,0 +1,41 @@
+java想不到的运行结果15-运算自动取整
+
+四则预算中如果参加运算的数没有浮点数时候，只有除法会参数浮点数的计算结果。有经验的程序员都知道在编程中这是不成立的，很多语言都会自动取整。也许你会说计算机就是不靠谱！
+
+demo:
+App.java
+
+class App {
+
+  public static void main(String[] args) {
+      float i = 11/2;
+      System.out.println(i);
+      double b = 11.0/2;
+      System.out.println(b);
+  }
+
+}
+
+运行结果:
+5.0
+5.5
+可能和现实中的四则运算不太一样，但是请不要说它不靠谱，程序语言设计者之所以这样设计肯定是考虑了多方因素的。
+
+精度丢失会编译不通过:
+demo:
+AppW.java
+class AppW{
+
+  public static void main(String[] args) {
+    float i=11.0/2;
+    System.out.println(i);
+  }
+
+}
+javac编译结果:
+AppW.java:4: error: incompatible types: possible lossy conversion from double to float
+    float i=11.0/2;
+                ^
+1 error
+
+想不到结果已经写了15篇了，总结出来其实这些问题都是对java基础知识不熟悉造成的，这也是我工作几年后得出结论，我学程序走的是野路子，刚开始喜欢写了代码就要有成果(一个网页,一个桌面程序等等)，完全的理论是多么无趣，很快就会失去兴趣。虽然我现在也不认为这是错的,但是也逐渐领悟到理论基础的重要性。

@@ -1,0 +1,9 @@
+每日开源-myth
+
+Myth是一个基于消息队列的分布式事务开源框架, 基于java语言来开发（JDK1.8），支持dubbo，springcloud,motan等rpc框架进行分布式事务。
+
+github地址:https://github.com/yu199195/myth
+源码研究文章:https://www.jianshu.com/p/22db5c17e424
+
+社区非常活跃,qq群:
+[https://camo.githubusercontent.com/dc1e63b7668e2ac67d5dd1f046e03c7168c4d0ce/68747470733a2f2f79753139393139352e6769746875622e696f2f696d616765732f71712e706e67]

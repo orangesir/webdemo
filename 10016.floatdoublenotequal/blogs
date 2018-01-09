@@ -1,0 +1,65 @@
+float和double不相等-java想不到的运行结果16
+
+java中float类型和double类型在使用的时候，可能不会太在意这两种类型的数据的比较。以为都是小数，按小数的比较方式就可以了。
+然而，事实和想法总是不同的。
+demo:
+App.java
+public class App
+{
+    public static void main( String[] args ) {
+
+        float a=5.6f;
+        double b=5.6;
+        if(a==b) {
+            System.out.println("a==b");
+        } else {
+            System.out.println("a!=b");
+        }
+        if(a>b) {
+            System.out.println("a>b");
+        } else {
+            System.out.println("!a>b");
+        }
+        if(a<b) {
+            System.out.println("a<b");
+        } else {
+            System.out.println("!a<b");
+        }
+
+        float c=5.6f;
+        double d=5.7;
+        if(c<d) {
+            System.out.println("c<d");
+        }else{
+            System.out.println("!c<d");
+        }
+
+        float e=5.7f;
+        double f=5.6;
+        if(e>f) {
+            System.out.println("e>f");
+        } else {
+            System.out.println("!e>f");
+        }
+
+        float g=5.6f;
+        double h=5.7;
+        if(g>h) {
+            System.out.println("g>h");
+        } else {
+            System.out.println("!g>h");
+        }
+    }
+}
+运行结果:
+a!=b
+!a>b
+a<b
+c<d
+e>f
+!g>h
+结果中很明显可以看到，在两个变量数学值相同时，float类型的值和double类型的值是不相等的,float类型变量要小于double类型变量,不过大于，小于比较不会被影响。
+java版本:
+java version "1.8.0_121"
+Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
+Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
